@@ -15,6 +15,7 @@ export const UserProvider = ({children}) => {
 			if(user) {
 				await createUserDocumentFromAuth(user)
 			}
+
 			setCurrentUser(user)
 		})
 
