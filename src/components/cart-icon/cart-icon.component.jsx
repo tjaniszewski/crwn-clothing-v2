@@ -5,15 +5,15 @@ import './cart-icon.styles.scss'
 import {CartContext} from '../../context/cart.context';
 
 const CartIcon = () => {
-	const {cartVisible, setCartVisible} = useContext(CartContext)
+	const {cartVisible, setCartVisible, totalQuantity} = useContext(CartContext)
 
-	const toggle = () => setCartVisible(!cartVisible)
+	const toggle = () => setCartVisible(!cartVisible);
 
 	return (
 		<div className="cart-icon-container"
 		     onClick={toggle}>
 			<ShoppingIcon className="shopping-icon" />
-			<span className="item-count">0</span>
+			<span className="item-count">{totalQuantity}</span>
 		</div>
 	)
 }
