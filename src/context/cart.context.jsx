@@ -1,42 +1,64 @@
+import {setSelectionRange} from '@testing-library/user-event/dist/utils';
 import {createContext, useEffect, useState} from 'react';
-
-const addCartItem = (cartItems, productToAdd) => {
-	const productExists = cartItems.find((cartItem) => cartItem.id === productToAdd.id);
-
-	if (productExists) {
-		return cartItems.map((cartItem) => cartItem.id === productToAdd.id ? ({
-			...cartItem,
-			quantity: cartItem.quantity + 1,
-		}) : cartItem)
-	}
-
-	return [...cartItems, {...productToAdd, quantity: 1}];
-}
-
-const countTotalQuantity = (cartItems) => cartItems.reduce((total, cartItem) => total + cartItem.quantity, 0)
+import {
+	addCartItem,
+	countTotalPrice,
+	countTotalQuantity,
+	decrementProduct,
+	incrementProduct,
+	removeProduct,
+} from './cart.context.utils';
 
 export const CartContext = createContext({
-	cartVisible: false,
-	setCartVisible: () => null,
 	cartItems: [],
-	addItemToCart: () => null,
+	cartVisible: false,
+	totalPrice: 0,
 	totalQuantity: 0,
+	setCartVisible: () => null,
+	addItemToCart: () => null,
+	removeProductFromCart: () => null,
+	incrementProductInCart: () => null,
+	decrementProductInCart: () => null,
 })
 
 export const CartProvider = ({children}) => {
-	const [cartVisible, setCartVisible] = useState(false);
 	const [cartItems, setCartItems] = useState([]);
+	const [cartVisible, setCartVisible] = useState(false);
 	const [totalQuantity, setTotalQuantity] = useState(0);
+	const [totalPrice, setTotalPrice] = useState(0);
 
 	const addItemToCart = (productToAdd) => {
 		setCartItems(addCartItem(cartItems, productToAdd));
 	}
 
+	const decrementProductInCart = (productId) => {
+		setCartItems(decrementProduct(cartItems, productId))
+	}
+
+	const incrementProductInCart = (productId) => {
+		setCartItems(incrementProduct(cartItems, productId))
+	}
+
+	const removeProductFromCart = (productId) => {
+		setCartItems(removeProduct(cartItems, productId))
+	}
+
 	useEffect(() => {
-		setTotalQuantity(countTotalQuantity(cartItems))
+		setTotalQuantity(countTotalQuantity(cartItems));
+		setTotalPrice(countTotalPrice(cartItems));
 	}, [cartItems])
 
-	const value = {cartVisible, setCartVisible, addItemToCart, cartItems, totalQuantity}
+	const value = {
+		addItemToCart,
+		cartItems,
+		cartVisible,
+		decrementProductInCart,
+		incrementProductInCart,
+		removeProductFromCart,
+		setCartVisible,
+		totalQuantity,
+		totalPrice,
+	}
 
 	return (
 		<CartContext.Provider value={value}>
