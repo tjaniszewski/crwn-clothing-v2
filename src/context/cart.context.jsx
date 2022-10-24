@@ -1,4 +1,3 @@
-import {setSelectionRange} from '@testing-library/user-event/dist/utils';
 import {createContext, useEffect, useState} from 'react';
 import {
 	addCartItem,
